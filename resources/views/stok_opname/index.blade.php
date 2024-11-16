@@ -40,7 +40,7 @@
                         <tbody>
                             @foreach ($stokOpnames as $stokOpname)
                                 <tr>
-                                    <td>{{ $loop->iteration }}</td>
+                                    <td>{{ ($stokOpnames->currentPage() - 1) * $stokOpnames->perPage() + $loop->iteration }}</td>
                                     <td>{{ $stokOpname->tanggal_dokumen }}</td>
                                     <td>{{ $stokOpname->nama_barang }}</td>
                                     <td>{{ $stokOpname->kode_barang }}</td>

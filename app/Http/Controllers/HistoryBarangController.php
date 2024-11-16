@@ -21,7 +21,7 @@ class HistoryBarangController extends Controller
                 return $query->where('nama_barang', 'like', '%' . $search . '%') // Pencarian nama barang
                     ->orWhere('kode_barang', 'like', '%' . $search . '%'); // Pencarian kode barang
             })
-            ->paginate(10); // Pagination 10 item per halaman
+            ->paginate(5); // Pagination 5 item per halaman
 
         // Return view dengan data stok opname
         return view('history_barang.index', compact('stok_opname', 'search'));
