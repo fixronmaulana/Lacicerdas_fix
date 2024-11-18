@@ -19,9 +19,23 @@ class CreateNewUser implements CreatesNewUsers
      */
     public function create(array $input): User
     {
+        // Custom validation
         Validator::make($input, [
             'name' => ['required', 'string', 'max:50', 'regex:/^[a-zA-Z]{1,50}$/'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users', 'regex:/^[^\d][\w.-]+@[\w.-]+\.[a-zA-Z]{2,}$/'],
+            'email' => [
+                'required',
+                'string',
+                'email',
+                'max:255',
+                function ($attribute, $value, $fail) {
+                    // Check uniqueness case-sensitively
+                    $exists = User::whereRaw('BINARY email = ?', [$value])->exists();
+                    if ($exists) {
+                        $fail('The email has already been taken.');
+                    }
+                },
+                'regex:/^[^\d][\w.-]+@[\w.-]+\.[a-zA-Z]{2,}$/'
+            ],
             'password' => $this->passwordRules(),
             'role' => ['required', 'string', 'in:admin,user'],
             'terms' => Jetstream::hasTermsAndPrivacyPolicyFeature() ? ['accepted', 'required'] : '',

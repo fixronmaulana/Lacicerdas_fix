@@ -20,6 +20,11 @@
                 {{ session('status') }}
             </div>
         @endif
+        @if ($errors->has('email'))
+            <div class="alert alert-danger mt-2">
+                {{ $errors->first('email') }}
+            </div>
+        @endif
 
         <form method="POST" action="{{ route('login') }}">
             @csrf

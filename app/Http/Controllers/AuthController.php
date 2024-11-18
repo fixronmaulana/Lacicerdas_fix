@@ -25,31 +25,34 @@ class AuthController extends Controller
     }
 
     public function login(Request $request)
-    {
-        $request->validate([
-            'email' => 'required|email',
-            'password' => 'required',
-        ]);
+{
+    // Validasi input
+    $request->validate([
+        'email' => 'required|email',
+        'password' => 'required',
+    ]);
 
-        if (Auth::attempt($request->only('email', 'password'))) {
-            $request->session()->regenerate();
+    // Cari user dengan email yang case-sensitive
+    $user = \App\Models\User::whereRaw('BINARY email = ?', [$request->email])->first();
 
-            // Flash message setelah login berhasil
-            Session::flash('status', 'Login berhasil! Selamat datang.');
+    // Cek apakah user ditemukan dan password cocok
+    if ($user && Auth::validate(['email' => $user->email, 'password' => $request->password])) {
+        Auth::login($user);
+        $request->session()->regenerate();
 
-            // Redirect berdasarkan role
-            $role = Auth::user()->role;
-            if ($role === 'admin') {
-                return redirect()->intended('/admin/dashboard');
-            } else {
-                return redirect()->intended('/user/dashboard');
-            }
+        // Redirect berdasarkan role
+        $role = $user->role;
+        if ($role === 'admin') {
+            return redirect()->intended('/admin/dashboard');
+        } else {
+            return redirect()->intended('/user/dashboard');
         }
-
-        throw ValidationException::withMessages([
-            'email' => __('auth.failed'),
-        ]);
     }
+
+    // Jika gagal login, kirimkan pesan error
+    return back()->withErrors(['email' => 'Email atau password tidak sesuai.']);
+}
+
 
     public function logout(Request $request)
     {
