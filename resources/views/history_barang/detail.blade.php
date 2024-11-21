@@ -26,48 +26,17 @@
                 </tr>
             </thead>
             <tbody>
-                @php
-                    $saldo = 0; // Inisialisasi saldo awal
-                    $allTransactions = collect([]); // Menggabungkan barangMasuk dan barangKeluar
-
-                    // Gabungkan barang masuk
-                    foreach ($barangMasuk as $masuk) {
-                        $allTransactions->push([
-                            'tanggal' => $masuk->tanggal,
-                            'keterangan' => 'Masuk',
-                            'masuk' => $masuk->transaksi_masuk,
-                            'keluar' => 0,
-                            'unit' => $masuk->unit,
-                        ]);
-                    }
-
-                    // Gabungkan barang keluar
-                    foreach ($barangKeluar as $keluar) {
-                        $allTransactions->push([
-                            'tanggal' => $keluar->tanggal,
-                            'keterangan' => $keluar->keterangan,
-                            'masuk' => 0,
-                            'keluar' => $keluar->transaksi_keluar,
-                            'unit' => $keluar->unit,
-                        ]);
-                    }
-
-                    // Urutkan berdasarkan tanggal dan keterangan
-                    $allTransactions = $allTransactions->sortBy(function ($transaction) {
-                        return [$transaction['tanggal'], $transaction['keterangan']];
-                    });
-                @endphp
-
-                @foreach ($allTransactions as $index => $trans)
+                @php $saldo = 0; @endphp
+                @foreach ($allTransactionsPaginate as $index => $trans)
                     @php
                         $saldo += $trans['masuk'] - $trans['keluar']; // Update saldo berdasarkan transaksi
                     @endphp
                     <tr>
-                        <td>{{ $loop->iteration }}</td>
+                        <td>{{ ($allTransactionsPaginate->currentPage() - 1) * $allTransactionsPaginate->perPage() + $loop->iteration }}</td>
                         <td>{{ \Carbon\Carbon::parse($trans['tanggal'])->format('d-m-Y') }}</td>
                         <td>{{ $trans['keterangan'] }}</td>
-                        <td colspan="2" class="text-center">{{ $trans['masuk'] }}</td>
-                        <td class="text-center">{{ $trans['keluar'] }}</td>
+                        <td colspan="2" class="text-center">{{ $trans['masuk'] ?: '-' }}</td>
+                        <td class="text-center">{{ $trans['keluar'] ?: '-' }}</td>
                         <td class="text-center">{{ $trans['unit'] }}</td>
                         <td class="text-center">{{ $saldo }}</td>
                     </tr>
@@ -76,8 +45,8 @@
             <tfoot>
                 <tr>
                     <th colspan="4" class="text-center">Jumlah</th>
-                    <th class="text-center">{{ $barangMasuk->sum('transaksi_masuk') }}</th>
-                    <th class="text-center">{{ $barangKeluar->sum('transaksi_keluar') }}</th>
+                    <th class="text-center">{{ $allTransactionsPaginate->sum('masuk') }}</th>
+                    <th class="text-center">{{ $allTransactionsPaginate->sum('keluar') }}</th>
                     <th>-</th>
                     <th class="text-center">{{ $saldo }}</th>
                 </tr>
@@ -86,10 +55,7 @@
 
         {{-- Pagination --}}
         <div class="d-flex justify-content-center">
-            {{ $barangMasuk->links() }} <!-- Untuk pagination barang masuk -->
-        </div>
-        <div class="d-flex justify-content-center">
-            {{ $barangKeluar->links() }} <!-- Untuk pagination barang keluar -->
+            {{ $allTransactionsPaginate->links() }}
         </div>
 
         <a href="{{ route('history.barang.index') }}" class="btn btn-secondary">Kembali</a>

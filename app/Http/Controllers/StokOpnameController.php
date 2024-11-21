@@ -25,7 +25,7 @@ class StokOpnameController extends Controller
             $stokOpname->transaksi_keluar = BarangKeluar::where('stok_opname_id', $stokOpname->id)->sum('transaksi_keluar');
 
             // Hitung stok_akhir berdasarkan saldo_awal dan transaksi_masuk dan transaksi_keluar
-            $stokOpname->stok_akhir = $stokOpname->saldo_awal + $stokOpname->transaksi_masuk - $stokOpname->transaksi_keluar;
+            // $stokOpname->stok_akhir = $stokOpname->saldo_awal + $stokOpname->transaksi_masuk - $stokOpname->transaksi_keluar; //ini harus diHAPUS!
         }
 
         return view('stok_opname.index', compact('stokOpnames'));

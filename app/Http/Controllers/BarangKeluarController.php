@@ -90,7 +90,7 @@ class BarangKeluarController extends Controller
 
         if ($stokOpname) {
             // Hitung stok_akhir dengan mengurangi transaksi keluar baru
-            $stokOpname->transaksi_keluar += $transaksi_keluar;
+            $stokOpname->transaksi_keluar =+ $transaksi_keluar;
             $stokOpname->stok_akhir = $stokOpname->saldo_awal + $stokOpname->transaksi_masuk - $stokOpname->transaksi_keluar;
             $stokOpname->save();
         }

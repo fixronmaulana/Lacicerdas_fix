@@ -26,7 +26,7 @@ class CreateNewUser implements CreatesNewUsers
                 'required',
                 'string',
                 'email',
-                'max:255',
+                'max:30',
                 function ($attribute, $value, $fail) {
                     // Check uniqueness case-sensitively
                     $exists = User::whereRaw('BINARY email = ?', [$value])->exists();
@@ -34,7 +34,7 @@ class CreateNewUser implements CreatesNewUsers
                         $fail('The email has already been taken.');
                     }
                 },
-                'regex:/^[^\d][\w.-]+@[\w.-]+\.[a-zA-Z]{2,}$/'
+                'regex:/^[^\d][\w.-]+@[\w.-]+\.[a-zA-Z]{1,30}$/'
             ],
             'password' => $this->passwordRules(),
             'role' => ['required', 'string', 'in:admin,user'],
@@ -44,6 +44,8 @@ class CreateNewUser implements CreatesNewUsers
             'name.string' => 'Nama harus berupa teks.',
             'name.max' => 'Nama tidak boleh lebih dari 50 karakter.',
             'name.regex' => 'Nama hanya boleh mengandung huruf dan spasi.',
+            'email.max' => 'Email tidak boleh lebih dari 30 karakter',
+            'password.max' => 'Password tidak boleh lebih dari 50 karakter'
         ])->validate();
 
         return User::create([
