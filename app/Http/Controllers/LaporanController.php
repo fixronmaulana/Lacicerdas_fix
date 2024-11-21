@@ -24,6 +24,11 @@ class LaporanController extends Controller
         $startDate = $request->input('start_date');
         $endDate = $request->input('end_date');
 
+        // Validasi rentang tanggal
+        if (strtotime($startDate) > strtotime($endDate)) {
+            return redirect()->back()->with('error', 'Laporan tidak dapat diunduh. Silakan masukkan rentang tanggal yang sesuai.');
+        }
+
         return Excel::download(new BarangMasukExport($startDate, $endDate), 'barang_masuk.xlsx');
     }
 
@@ -31,6 +36,11 @@ class LaporanController extends Controller
     {
         $startDate = $request->input('start_date');
         $endDate = $request->input('end_date');
+
+        // Validasi rentang tanggal
+        if (strtotime($startDate) > strtotime($endDate)) {
+            return redirect()->back()->with('error', 'Laporan tidak dapat diunduh. Silakan masukkan rentang tanggal yang sesuai.');
+        }
 
         return Excel::download(new BarangKeluarExport($startDate, $endDate), 'barang_keluar.xlsx');
     }
