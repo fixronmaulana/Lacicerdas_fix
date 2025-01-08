@@ -81,7 +81,7 @@ class BarangKeluarController extends Controller
 
         $this->updateStokOpnameKeluar($request->stok_opname_id, $request->transaksi_keluar);
 
-        return redirect()->route('barang_keluar.index')->with('success', 'Barang keluar berhasil ditambahkan.');
+        return redirect()->route('barang_keluar.index')->with('success', 'Barang keluar berhasila ditambahkan.');
     }
 
     private function updateStokOpnameKeluar($stok_opname_id, $transaksi_keluar)
