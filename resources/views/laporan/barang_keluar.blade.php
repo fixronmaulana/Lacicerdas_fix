@@ -12,7 +12,7 @@
                         {{ session('error') }}
                     </div>
                 @endif
-                
+
                 <form action="{{ route('laporan.exportBarangKeluar') }}" method="GET">
                     <div class="form-row align-items-end">
                         <div class="col">
@@ -23,6 +23,13 @@
                             <label for="end_date">Tanggal Akhir:</label>
                             <input type="date" name="end_date" class="form-control" required>
                         </div>
+                    <div class="col">
+                        <label for="format">Format Laporan:</label>
+                        <select name="format" class="form-control" required>
+                            <option value="excel">Excel</option>
+                            <option value="pdf">PDF</option>
+                        </select>
+                    </div>
                         <div class="col-auto">
                             <button type="submit" class="btn btn-primary">
                                 <i class="bi bi-printer"></i> Cetak
